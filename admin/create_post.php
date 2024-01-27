@@ -1,18 +1,50 @@
 <?php
-    include "layouts/side_nav.php";
+    
     require "../dbconnect.php";
 
-    $sql = "SELECT posts.*,categories.name as c_name , users.name as u_name FROM posts INNER JOIN categories ON categories.id = posts.category_id INNER JOIN users ON users.id = posts.user_id";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $posts = $stmt->fetchAll(); 
-    // var_dump($posts);
+    if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
-    $sql = "SELECT * FROM categories";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $categories = $stmt->fetchAll();
-    // var_dump($categories);
+        // ထည့်လိုက်တဲ့ input data တွေကိုလက်ခံတာ
+
+        $title = $_POST['title'];
+        $category_id = $_POST['category_id'];
+        $description = $_POST['description'];
+        $user_id = 2;
+        $image_array = $_FILES['image'];
+
+        // echo "$title and $category_id and  $user_id and $description";
+        // print_r($image);
+
+        // File upload
+
+        if(isset($image_array) && $image_array['size'] > 0){
+            $folder_name = "images/";
+            $image_path = $folder_name.$image_array['name']; //images/123.png
+
+            $tmp_name = $image_array['tmp_name'];
+            move_uploaded_file($tmp_name,$image_path);
+        }
+
+        $sql = "INSERT INTO posts (title,image,user_id,category_id,description) VALUES (:title,:image_path,:user_id,:category_id,:description)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':image_path', $image_path);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':category_id', $category_id);
+        $stmt->bindParam(':description', $description);
+
+        $stmt->execute();
+
+        header("location: posts.php");
+    }else{
+        include "layouts/side_nav.php";
+        $sql = "SELECT * FROM categories";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $categories = $stmt->fetchAll();
+        // var_dump($categories);
+    }
+
 ?>
 
     <main>
@@ -33,7 +65,7 @@
                     Create Posts
                 </div>
                 <div class="card-body">
-                    <form action="<?php htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <form action="<?php htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="title" class="form-label">Title</label>
                             <input type="text" class="form-control" id="title" name="title">
@@ -65,7 +97,6 @@
             </div>
         </div>
     </main>
-
 <?php
     include "layouts/footer.php";
 ?>

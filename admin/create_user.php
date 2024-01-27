@@ -44,10 +44,6 @@
                             <label for="role" class="form-label">Role</label>
                             <input type="text" class="form-control" id="role" name="role">
                         </div>
-                        <div class="mb-3">
-                            <label for="created_at" class="form-label">Created at</label>
-                            <input type="date" class="form-control" id="created_at" name="created_at">
-                        </div>
                         <div class="d-grid gap-2">
                             <button class="btn btn-primary" type="submit">Create</button>
                         </div>
