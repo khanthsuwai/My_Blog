@@ -1,12 +1,33 @@
 <?php
-    include "layouts/side_nav.php";
     require "../dbconnect.php";
 
-    $sql = "SELECT * FROM users";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $users = $stmt->fetchAll();
-    // var_dump($users);
+    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $role = $_POST['role'];
+        // echo "$name and $email and $password and $role";
+
+        $sql = "INSERT INTO users (name,email,password,role) VALUES (:name,:email,:password,:role)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':name',$name);
+        $stmt->bindParam(':email',$email);
+        $stmt->bindParam(':password',$password);
+        $stmt->bindParam(':role',$role);
+
+        $stmt->execute();
+
+        header("location: users.php");
+
+    }else{
+        include "layouts/side_nav.php";
+
+        $sql = "SELECT * FROM users";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $users = $stmt->fetchAll();
+        // var_dump($users);
+    }
 ?>
 
     <main>
@@ -42,7 +63,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="role" class="form-label">Role</label>
-                            <input type="text" class="form-control" id="role" name="role">
+                            <select class="form-select" id="role" name="role">
+                                <option selected>Choose....</option>
+                                <option value="admin">Admin</option>
+                                <option value="author">Author</option>
+                            </select>
                         </div>
                         <div class="d-grid gap-2">
                             <button class="btn btn-primary" type="submit">Create</button>

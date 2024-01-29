@@ -1,12 +1,27 @@
 <?php
-    include "layouts/side_nav.php";
+    
     require "../dbconnect.php";
 
-    $sql = "SELECT * FROM categories";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $categories = $stmt->fetchAll();
-    // var_dump($categories);
+
+
+    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+        $name = $_POST['name'];
+        // echo $name;
+
+        $sql = "INSERT INTO categories (name) VALUES (:name) ";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':name',$name);
+        $stmt->execute();
+
+        header("location: categories.php");
+    }else{
+        include "layouts/side_nav.php";
+        $sql = "SELECT * FROM categories";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $categories = $stmt->fetchAll();
+        // var_dump($categories);
+    }
 ?>
 
     <main>
