@@ -29,6 +29,10 @@
                 </div>
             </div>
         </div>
+        
+    <!-- index.php နဲ့ detail.php နဲ့ရဲ့  container နဲ့ row div အပိတ် -->
+    </div>
+    </div>
         <!-- Footer-->
         <footer class="py-5 bg-dark">
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; All right reversed 2024</p></div>
